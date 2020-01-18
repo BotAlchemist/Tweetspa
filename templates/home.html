@@ -1,0 +1,90 @@
+<html>
+<head>
+<title> Twitter Sentiment Analyzer </title>
+<style>
+body{
+margin: 1em;
+padding: 1em;
+font-family:verdana;
+font-size: "3";
+}
+
+.chart_box {
+  width: 550px;
+  margin: 0 auto;
+}
+
+div.note {
+  font-size: 9px;
+}
+</style>
+</head>
+
+<body bgcolor=white>
+
+
+<div>
+<div class="note">
+	Developed & Designed by: <br>
+	<i>Sumit Srivastava </i><br>
+	sumvast@gmail.com
+	</div>
+<center><h2>Twitter Sentiment Analysis</h2></center>
+
+	<div>
+		<form action = "{{url_for('result')}}" method = "post">
+			<center>
+				<input type = "text" name = "text" placeholder = "Enter keyword/ hastag"  required= "required" style="font-size: 12pt; height: 30px; width:500px; "><br>
+				<input type = "text" name = "number" placeholder = "Enter No. of tweets to fetch"  required= "required" style="font-size: 12pt; height: 30px; width:500px; "><br>
+				<input type = "text" name = "since" placeholder = "Enter Date since YYYY-MM-DD"  required= "required" style="font-size: 12pt; height: 30px; width:500px; "><br>
+				<button  type= "submit"> Check Sentiment </button>
+				<a href="{{url_for('home')  }}">Reset </a>
+			</center>
+			
+
+		</form>
+	</div>
+
+	<div class="chart_box">
+		<div  id="piechart"></div>
+	</div>
+	
+	
+	
+	<!--{{neg_tweets}} <br> {{neu_tweets}} <br> {{pos_tweets}} <br> -->
+	
+	{% for table in tables %}
+            {{ table|safe }}
+	{% endfor %}
+	
+</div>
+
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+<script type="text/javascript">
+// Load google charts
+google.charts.load('current', {'packages':['corechart']});
+google.charts.setOnLoadCallback(drawChart);
+
+// Draw the chart and set the chart values
+function drawChart() {
+  var data = google.visualization.arrayToDataTable([
+  ['Tweets', 'Sentiment'],
+  ['Positive', {{pos_tweets}}],
+  ['Negative', {{neg_tweets}}],
+  ['Neutral', {{neu_tweets}}]
+  
+  
+]);
+
+  // Optional; add a title and set the width and height of the chart
+  var options = {'title':'Twitter Sentiment Analysis for keyword  "{{keyword}}" for last {{NoOfTerms}} tweets since {{date_since}}', 'width':550, 'height':400};
+
+  // Display the chart inside the <div> element with id="piechart"
+  var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+  chart.draw(data, options);
+}
+</script>
+</body>
+</html>
